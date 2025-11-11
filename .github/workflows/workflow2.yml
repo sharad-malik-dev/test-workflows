@@ -1,0 +1,47 @@
+name: CI-Choice
+
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'Enter your username'
+        required: true
+        type: string
+      environment:
+        description: 'Select environment'
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      debug-mode:
+        description: 'Enable debug mode'
+        required: false
+        type: boolean
+        default: false
+      number-input:
+        description: 'Enter a number'
+        required: false
+        type: number
+        default: 42
+
+jobs:
+  print-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print all inputs
+        run: |
+          echo "Username: ${{ github.event.inputs.username }}"
+          echo "Environment: ${{ github.event.inputs.environment }}"
+          echo "Debug Mode: ${{ github.event.inputs.debug-mode }}"
+          echo "Number Input: ${{ github.event.inputs.number-input }}"
+          
+      - name: Print formatted message
+        run: |
+          echo "Hello ${{ github.event.inputs.username }}!"
+          echo "You selected the ${{ github.event.inputs.environment }} environment"
+          echo "Debug mode is ${{ github.event.inputs.debug-mode }}"

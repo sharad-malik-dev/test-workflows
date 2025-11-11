@@ -20,7 +20,7 @@ jobs:
         run: |
           cat > Dockerfile << EOD
           FROM ubuntu:latest
-          RUN echo "echo -e "Todays on $(date)\nMe ${{ github.event.inputs.myname }} , says Hellooo word!!\n"" > /bin/hellow
+          RUN echo ""Todays on $(date)\nMe ${{ github.event.inputs.myname }} , says Hellooo word!!\n"" > /bin/hellow
           RUN chmod 777 /bin/hellow
           CMD /bin/hellow
           EOD

@@ -3,92 +3,50 @@ name: nodejs-matrix-builds
 on:
   push:
     branches: [ main, master ]
-      inputs:
-        exclude-version:
-          description: version to be excluded from the build
-          required: true
-          type: choice
-          options: [ 12.x, 13.x, 14.x, 15.x, 16.x ]
-        exclude-os:
-          description: OS to be excluded from the build
-          required: true
-          type: choice
-          options: [ ubuntu-latest, windows-latest ]
-        include-version:
-          description: version to be included from the build
-          required: true
-          type: choice
-          options: [ 12.x, 13.x, 14.x, 15.x, 16.x ]
-        include-os:
-          description: OS to be included from the build
-          required: true
-          type: choice
-          options: [ ubuntu-latest, windows-latest ]
   pull_request:
     branches: [ main, master ]
-      inputs:
-        exclude-version:
-          description: version to be excluded from the build
-          required: true
-          type: choice
-          options: [ 12.x, 13.x, 14.x, 15.x, 16.x ]
-        exclude-os:
-          description: OS to be excluded from the build
-          required: true
-          type: choice
-          options: [ ubuntu-latest, windows-latest ]
-        include-version:
-          description: version to be included from the build
-          required: true
-          type: choice
-          options: [ 12.x, 13.x, 14.x, 15.x, 16.x ]
-        include-os:
-          description: OS to be included from the build
-          required: true
-          type: choice
-          options: [ ubuntu-latest, windows-latest ]
   workflow_dispatch:
       inputs:
         exclude-version:
           description: version to be excluded from the build
-          required: true
-          type: choice
-          options: [ 12.x, 13.x, 14.x, 15.x, 16.x ]
+          required: false
+          type: string
+          default: 12.x
         exclude-os:
           description: OS to be excluded from the build
-          required: true
-          type: choice
-          options: [ ubuntu-latest, windows-latest ]
+          required: false
+          type: string
+          default: ubuntu-latest
         include-version:
           description: version to be included from the build
-          required: true
-          type: choice
-          options: [ 12.x, 13.x, 14.x, 15.x, 16.x ]
+          required: false
+          type: string
+          default: 12.x, 13.x, 14.x, 15.x, 16.x
         include-os:
           description: OS to be included from the build
-          required: true
-          type: choice
-          options: [ ubuntu-latest, windows-latest ]
+          required: false
+          type: string
+          default: ubuntu-latest, windows-latest
 
 jobs:
   nodejs-builds:
     runs-on: ${{ matrix.os }}
+    name: Node ${{ matrix.node-version }} on ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [ ${{github.event.inputs.include-version }} ]
-        os: [ ${{github.event.inputs.include-os}} ]
+        node-version: ${{ fromJSON(format('["{0}"]', join(github.event.inputs.include-version, '","'))) }}
+        os: ${{ fromJSON(format('["{0}"]', join(github.event.inputs.include-os, '","'))) }}
         exclude:
-          - node-version: [ ${{ github.event.inputs.exclude-version}}  ]
-            os: [ ${{ github.event.inputs.exclude-os }} ]
-  name: Node ${{ matrix.node-version }} on ${{ matrix.os }}
-
+          - node-version: ${{ fromJSON(format('[{0}]', join(github.event.inputs.exclude-version, "','" ))) }}
+            os: ${{ fromJSON(format('[{0}]', join(github.event.inputs.exclude-os, "','" ))) }}
+          
   steps:
     - name: checkout source code
       uses: actions/checkout@v3
 
     - name: setup node JS
       uses: actions/setup-node@v4
-        with:
+      with:
           node-version: ${{matrix.node-version}}
           cache: 'npm'
 

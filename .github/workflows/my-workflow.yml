@@ -9,19 +9,18 @@ on:
 
 jobs:
   runs-on: ubuntu-latest
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v3
-      - name: create docker container file
-        run: |
-        cat>Dockerfile<<'EOD'
-        FROM ubuntu:latest
-        RUN echo "Todays on $(date)\nMe ${{ github.event.inputs.myname }} , says Hellooo word!!\n\n" > /bin/hellow ; chmod 777 /bin/hellow
-        CMD /bin/hellow
-        EOD
-        
-      - name: Build Docker image
-        run: docker build -t hello-world-image .
-      - name: use newly created docker to say hello
-        run: docker run --rm hello-world-image
+  steps:
+    - name: checkout repository
+      uses: actions/checkout@v3
+    - name: create docker container file
+      run: |
+      cat>Dockerfile<<'EOD'
+      FROM ubuntu:latest
+      RUN echo "Todays on $(date)\nMe ${{ github.event.inputs.myname }} , says Hellooo word!!\n\n" > /bin/hellow ; chmod 777 /bin/hellow
+      CMD /bin/hellow
+      EOD  
+    - name: Build Docker image
+      run: docker build -t hello-world-image .
+    - name: use newly created docker to say hello
+      run: docker run --rm hello-world-image
         

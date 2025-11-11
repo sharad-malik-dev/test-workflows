@@ -18,12 +18,13 @@ jobs:
         uses: actions/checkout@v3
       - name: create docker container file
         run: |
-          cat > Dockerfile << 'EOD'
+          cat > Dockerfile << EOD
           FROM ubuntu:latest
           RUN echo "echo -e "Todays on $(date)\nMe ${{ github.event.inputs.myname }} , says Hellooo word!!\n"" > /bin/hellow
           RUN chmod 777 /bin/hellow
           CMD /bin/hellow
           EOD
+          
       - name: get Dockerfile
         run: cat Dockerfile
         

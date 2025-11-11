@@ -34,11 +34,24 @@ jobs:
     name: Node ${{ matrix.node-version }} on ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: ${{ fromJSON(format('["{0}"]', join(github.event.inputs.include-version, '","'))) }}
-        os: ${{ fromJSON(format('["{0}"]', join(github.event.inputs.include-os, '","'))) }}
+        node-version: [12, 13, 14, 15, 16]
+        os: [ubuntu-latest, windows-latest]
         exclude:
-          - node-version: ${{ github.event.inputs.exclude-version }}
-            os: ${{ github.event.inputs.exclude-os }}
+          - node-version: 12
+            os: windows-latest
+          - node-version: 13
+            os: windows-latest
+          - node-version: 14
+            os: windows-latest            
+          - node-version: 15
+            os: windows-latest
+          - node-version: 16
+            os: windows-latest            
+        #node-version: ${{ fromJSON(format('["{0}"]', join(github.event.inputs.include-version, '","'))) }}
+        #os: ${{ fromJSON(format('["{0}"]', join(github.event.inputs.include-os, '","'))) }}
+        #exclude:
+        #  - node-version: ${{ github.event.inputs.exclude-version }}
+        #    os: ${{ github.event.inputs.exclude-os }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4

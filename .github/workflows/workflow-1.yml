@@ -1,39 +1,34 @@
+---
 name: basic work flow no task at all
 on:
-  workflow_dispatch:
-  inputs:
-    environment:
-      description: provide targate environment name
-      type: choice
-      options: [ DEV, UAT, PROD ]
-      required: true
-    username:
-       description: name of the user
-       type: string
-       default: 'devops'
-       required: true
-    build:
-       description: say build or no build
-       type: bolean
-       default: 1
-       required: true
+  workflow_dispatch: null
+    inputs:
+      environment:
+        description: provide targate environment name
+        type: choice
+        options:
+          - DEV
+          - UAT
+          - PROD
+        required: true
+      username:
+        description: name of the user
+        type: string
+        default: devops
+        required: true
+      build:
+        description: say build or no build
+        type: bolean
+        default: 1
+        required: true
 jobs:
-  print-inputs:
+  print-inputs: null
   runs-on: ubuntu-latest
   steps:
     - name: checkout repo data
       uses: actions/checkout/v3
-
     - name: print inputs
       run: |
         echo "Environment is :: ${{ github.event.inputs.environment }}"
         echo "Username is :: ${{ github.event.inputs.username }}"
         echo "Buils is :: ${{ github.event.inputs.build }}"
-
-
-
-
-
-
-     
-

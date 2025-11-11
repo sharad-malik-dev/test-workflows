@@ -39,28 +39,28 @@ jobs:
         exclude:
           - node-version: ${{ github.event.inputs.exclude-version }}
             os: ${{ github.event.inputs.exclude-os }}
-          
-  steps:
-    - name: checkout source code
-      uses: actions/checkout@v3
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
 
-    - name: setup node JS
-      uses: actions/setup-node@v4
-      with:
-          node-version: ${{matrix.node-version}}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-    - name: Verify Node.js version
-      run: |
-        node --version
-        npm --version
-        echo "Running on ${{ matrix.os }}"
+      - name: Verify environment
+        run: |
+          echo "Node.js: $(node --version)"
+          echo "NPM: $(npm --version)"
+          echo "OS: ${{ matrix.os }}"
+          echo "Event: ${{ github.event_name }}"
 
-    - name: Node.js install dep using node packge file
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: run the application
-      run: npm start
+      - name: Run application
+        run: npm start
 
-    - name: run the test
-      run: npm test
+      - name: Run tests
+        run: npm test

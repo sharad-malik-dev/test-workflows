@@ -1,7 +1,6 @@
----
 name: basic work flow no task at all
 on:
-  workflow_dispatch: null
+  workflow_dispatch:
     inputs:
       environment:
         description: provide targate environment name

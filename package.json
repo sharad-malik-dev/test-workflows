@@ -1,0 +1,16 @@
+{
+  "name": "node-compatibility-demo",
+  "version": "1.0.0",
+  "description": "Demo compatible with Node 12-16, not v11",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js",
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

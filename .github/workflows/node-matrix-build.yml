@@ -37,8 +37,8 @@ jobs:
         node-version: ${{ fromJSON(format('["{0}"]', join(github.event.inputs.include-version, '","'))) }}
         os: ${{ fromJSON(format('["{0}"]', join(github.event.inputs.include-os, '","'))) }}
         exclude:
-          - node-version: ${{ fromJSON(format('[{0}]', join(github.event.inputs.exclude-version, "','" ))) }}
-            os: ${{ fromJSON(format('[{0}]', join(github.event.inputs.exclude-os, "','" ))) }}
+          - node-version: ${{ github.event.inputs.exclude-version }}
+            os: ${{ github.event.inputs.exclude-os }}
           
   steps:
     - name: checkout source code

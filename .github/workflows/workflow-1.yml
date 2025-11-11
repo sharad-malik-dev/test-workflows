@@ -21,7 +21,7 @@ on:
         default: 1
         required: true
 jobs:
-  print-inputs: null
+  print-inputs:
   runs-on: ubuntu-latest
   steps:
     - name: checkout repo data

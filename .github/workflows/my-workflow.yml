@@ -1,12 +1,13 @@
 name: my-flow
 on:
   push: [main, develop]
-  inputs:
-    myname:
-    type: string
-    default: 'sharad malik'
-    required: true
-
+  workflow_dispatch:
+    inputs:
+      myname:
+      type: string
+      default: 'sharad malik'
+      required: true
+      
 jobs:
   runs-on: ubuntu-latest
   steps:

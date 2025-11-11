@@ -22,12 +22,12 @@ on:
         required: true
 jobs:
   print-inputs:
-  runs-on: ubuntu-latest
-  steps:
-    - name: checkout repo data
-      uses: actions/checkout/v3
-    - name: print inputs
-      run: |
-        echo "Environment is :: ${{ github.event.inputs.environment }}"
-        echo "Username is :: ${{ github.event.inputs.username }}"
-        echo "Buils is :: ${{ github.event.inputs.build }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo data
+        uses: actions/checkout/v3
+      - name: print inputs
+        run: |
+          echo "Environment is :: ${{ github.event.inputs.environment }}"
+          echo "Username is :: ${{ github.event.inputs.username }}"
+          echo "Buils is :: ${{ github.event.inputs.build }}"

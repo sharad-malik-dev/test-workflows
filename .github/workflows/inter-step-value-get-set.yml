@@ -13,8 +13,7 @@ jobs:
       - name: list dir and save in a file to share
         id: list-source
         run: |
-          find . -type f -not -path './.git/*' > files.txt
-          echo "list=$(cat files.txt)" >> $GITHUB_OUTPUT
+          echo "list=$(find . -type f -not -path './.git/*')" >> $GITHUB_OUTPUT
           echo "list_add=true" >> $GITHUB_OUTPUT
 
       - name: check file come from step 1

@@ -21,7 +21,7 @@ jobs:
         run: |
           echo "${{ steps.list-source.outputs.list }}" | base64 -d > files.txt
           while read line ; do
-              ls $line > /dev/null
+              ls $line 
               if [ "$?" != "0" ];then
                  echo $line not found... exit now
                  exit 1

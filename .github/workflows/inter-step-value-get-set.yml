@@ -1,0 +1,32 @@
+name: workflow for steps values
+
+on:
+  workflow_dispatch:
+
+jobs:
+  manage-steps-outputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout data
+        uses: actions/checkout@v3
+
+      - name: list dir and save in a file to share
+        id: list-source
+        run: |
+          find . -type f -not -path './.git/*' > files.txt
+          echo "list=$(cat files.txt)" >> $GITHUB_OUTPUT
+          echo "list_add=true" >> $GITHUB_OUTPUT
+
+      - name: check file come from step 1
+        if: step.list-source.list_add == 'true'
+        run: |
+          while IFS= read -r file ; do
+              ls $line > /dev/null
+              if [ "$?" != "0" ];then
+                 echo $line not found... exit now
+                 exit 1
+              fi
+          done <<< "${{ step.list-source.list }}"
+
+
+

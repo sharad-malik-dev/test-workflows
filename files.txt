@@ -1,0 +1,13 @@
+./test.js
+./index.js
+./check-version.js
+./README.md
+./package.json
+./.github/workflows/workflow-1.yml
+./.github/workflows/my-workflow.yml
+./.github/workflows/workflow2.yml
+./.github/workflows/node-matrix-build.yml
+./.github/workflows/inter-step-value-get-set.yml
+./.github/workflows/blank.yml
+./files.txt
+./package-lock.json

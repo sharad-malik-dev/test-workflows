@@ -6,6 +6,8 @@ on:
 jobs:
   manage-steps-outputs:
     runs-on: ubuntu-latest
+    outputs:
+      repo_status: ${{ steps.valid-repo.repo_validation }}
     steps:
       - name: checkout data
         uses: actions/checkout@v3
@@ -18,15 +20,26 @@ jobs:
 
       - name: check file come from step 1
         if: steps.list-source.outputs.list_add == 'true'
+        id: valid-repo
         run: |
           echo "${{ steps.list-source.outputs.list }}" | base64 -d > files.txt
           while read line ; do
               ls $line 
               if [ "$?" != "0" ];then
                  echo $line not found... exit now
+                 echo "repo_validation=false" >> $GITHUB_OUTPUT 
                  exit 1
               fi
           done < files.txt
+          echo "repo_validation=true" >> $GITHUB_OUTPUT
+  manage-jobs-outputs:
+    runs-on: ubuntu-latest
+    needs: manage-steps-outputs
+    steps:
+      - name: find repository validation flag
+        if: ${{ needs.jobs.repo_status }} == "true"
+        run: |
+          echo "the job repository was passed"
+          echo "Good Luck"
 
-
-
+  

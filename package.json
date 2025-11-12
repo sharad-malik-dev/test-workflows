@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "check-version": "node check-version.js",
+    "prestart": "node check-version.js"
   },
   "engines": {
     "node": ">=12.0.0"

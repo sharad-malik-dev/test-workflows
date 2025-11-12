@@ -70,6 +70,16 @@ jobs:
           echo "OS: ${{ matrix.os }}"
           echo "Event: ${{ github.event_name }}"
 
+      - name: Verify Node.js version
+        run: |
+          echo "Requested version: ${{ matrix.node-version }}"
+          echo "Actual version: $(node --version)"
+          echo "npm version: $(npm --version)"
+
+      - name: Check version compatibility
+        run: node check-version.js
+
+
       - name: Install dependencies
         run: npm install
 

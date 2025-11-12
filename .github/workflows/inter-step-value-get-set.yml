@@ -13,19 +13,20 @@ jobs:
       - name: list dir and save in a file to share
         id: list-source
         run: |
-          echo "list=$(find . -type f -not -path './.git/*')" >> $GITHUB_OUTPUT
+          echo "list=$(find . -type f -not -path './.git/*'| base64 -w0)" >> $GITHUB_OUTPUT
           echo "list_add=true" >> $GITHUB_OUTPUT
 
       - name: check file come from step 1
         if: steps.list-source.list_add == 'true'
         run: |
-          while IFS= read -r file ; do
+          echo "${{ steps.list-source.outputs.list }}" | base64 -d > files.txt
+          while read line ; do
               ls $line > /dev/null
               if [ "$?" != "0" ];then
                  echo $line not found... exit now
                  exit 1
               fi
-          done <<< "${{ steps.list-source.list }}"
+          done < files.txt
 
 
 

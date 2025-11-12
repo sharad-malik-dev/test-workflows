@@ -78,3 +78,33 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: List npm log files
+        if: always()
+        run: |
+          echo "=== NPM Log Files ==="
+          find /home/runner/.npm/_logs/ -name "*.log" -type f 2>/dev/null | head -20 || echo "No npm log files found"
+          echo "=== Current directory log files ==="
+          find . -name "*.log" -type f 2>/dev/null | head -10 || echo "No log files in current directory"
+
+      - name: Upload npm debug logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-debug-logs-${{ matrix.node-version }}-${{ matrix.os }}-${{ github.run_id }}
+          path: |
+            /home/runner/.npm/_logs/
+            package.json
+            package-lock.json
+            npm-debug.log*
+          retention-days: 30
+
+      - name: Upload npm debug logs (on success)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-success-logs-${{ matrix.node-version }}-${{ matrix.os }}-${{ github.run_id }}
+          path: |
+            /home/runner/.npm/_logs/
+          retention-days: 7
+

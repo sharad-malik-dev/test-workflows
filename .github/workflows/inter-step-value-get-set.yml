@@ -17,7 +17,7 @@ jobs:
           echo "list_add=true" >> $GITHUB_OUTPUT
 
       - name: check file come from step 1
-        if: steps.list-source.list_add == 'true'
+        if: steps.list-source.outputs.list_add == 'true'
         run: |
           echo "${{ steps.list-source.outputs.list }}" | base64 -d > files.txt
           while read line ; do

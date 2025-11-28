@@ -45,3 +45,47 @@ jobs:
           echo "Hello ${{ github.event.inputs.username }}!"
           echo "You selected the ${{ github.event.inputs.environment }} environment"
           echo "Debug mode is ${{ github.event.inputs.debug-mode }}"
+
+      - name: Validate inputs (basic sanitization)
+        shell: bash
+        run: |
+          set -euo pipefail
+          USERNAME='${{ github.event.inputs.username }}'
+          if [[ ! $USERNAME =~ ^[a-zA-Z0-9._-]{1,64}$ ]]; then
+            echo "Invalid username format: $USERNAME" >&2
+            exit 1
+          fi
+          echo "username validated"
+
+      - name: Pull container image (Step 1)
+        run: |
+          # Use a pinned image tag to avoid 'latest'
+          IMAGE_ALPINE=alpine:3.19
+          docker pull $IMAGE_ALPINE
+          docker image inspect $IMAGE_ALPINE --format '{{.RepoDigests}}' || true
+
+      - name: Scan pulled image for vulnerabilities (optional)
+        uses: aquasecurity/trivy-action@v0.8.0
+        with:
+          image-ref: alpine:3.19
+          format: 'table'
+          severity: 'HIGH,CRITICAL'
+
+      - name: Run command inside pulled container (Step 2)
+        env:
+          USERNAME: ${{ github.event.inputs.username }}
+          ENVIRONMENT: ${{ github.event.inputs.environment }}
+          DEBUG_MODE: ${{ github.event.inputs.debug-mode }}
+          NUMBER_INPUT: ${{ github.event.inputs.number-input }}
+        run: |
+          set -euo pipefail
+          IMAGE_ALPINE=alpine:3.19
+          # Run as nobody to avoid root privileges, drop all caps and no new privileges
+          docker run --rm --read-only --security-opt no-new-privileges --cap-drop ALL \
+            --user 65534:65534 \
+            -e USERNAME -e ENVIRONMENT -e DEBUG_MODE -e NUMBER_INPUT \
+            $IMAGE_ALPINE /bin/sh -lc '\
+              echo "Hello $USERNAME!" && \
+              echo "Environment: $ENVIRONMENT" && \
+              echo "Debug Mode: $DEBUG_MODE" && \
+              echo "Number Input: $NUMBER_INPUT" '

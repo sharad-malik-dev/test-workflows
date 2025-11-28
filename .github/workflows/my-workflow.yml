@@ -19,12 +19,19 @@ jobs:
       - name: create docker container file
         run: |
           cat > Dockerfile << EOD
-          FROM ubuntu:latest
-          RUN echo "echo "Todays on $(date)"" > /bin/hellow
-          RUN echo "echo "Me ${{ github.event.inputs.myname }} , says Hellooo word!!"" >> /bin/hellow
-          RUN chmod 777 /bin/hellow
-          RUN cat /bin/hellow
-          CMD /bin/hellow
+          FROM ubuntu:24.04
+          # Create a non-root user and script
+          RUN apt-get update && apt-get install -y --no-install-recommends \ 
+              ca-certificates && rm -rf /var/lib/apt/lists/*
+          RUN useradd -m -u 1000 appuser || true
+          RUN mkdir -p /home/appuser/bin
+          RUN echo '#!/bin/sh' > /home/appuser/bin/hellow
+          RUN echo 'echo "Todays on $(date)"' >> /home/appuser/bin/hellow
+          RUN echo 'echo "Me ${{ github.event.inputs.myname }} , says Hellooo word!!"' >> /home/appuser/bin/hellow
+          RUN chmod 755 /home/appuser/bin/hellow && chown -R appuser:appuser /home/appuser/bin
+          USER appuser
+          ENV PATH=/home/appuser/bin:$PATH
+          CMD ["hellow"]
           EOD
           
       - name: get Dockerfile
@@ -32,7 +39,19 @@ jobs:
         
         
       - name: Build Docker image
-        run: docker build -t hello-world-image .
+        run: |
+          # Step 1: Pull base image explicitly before building to comply with repo policy
+          docker pull ubuntu:24.04
+          docker build --no-cache -t hello-world-image .
+
+      - name: Scan built image for vulnerabilities (optional)
+        uses: aquasecurity/trivy-action@v0.8.0
+        with:
+          image-ref: hello-world-image
+          format: 'table'
+          severity: 'HIGH,CRITICAL'
         
       - name: use newly created docker to say hello
-        run: docker run --rm hello-world-image
+        run: |
+          docker run --rm --read-only --security-opt no-new-privileges --cap-drop ALL \
+            --user 1000:1000 hello-world-image

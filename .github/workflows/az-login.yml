@@ -18,6 +18,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
+          auth-type: SERVICE_PRINCIPAL
           creds: "${{ secrets.CRED }}"
 
       - name: Verify Azure CLI
